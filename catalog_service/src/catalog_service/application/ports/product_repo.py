@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from catalog_service.src.catalog_service.domain.entities.product import Product
+from catalog_service.domain.entities.product import Product
 
 
 class ProductRepository(ABC):

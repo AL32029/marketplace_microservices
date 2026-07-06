@@ -1,4 +1,4 @@
-from catalog_service.src.catalog_service.application.ports.product_repo import ProductRepository
+from catalog_service.application.ports.product_repo import ProductRepository
 
 
 class GetStockUserCase:
