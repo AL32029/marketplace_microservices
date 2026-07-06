@@ -11,4 +11,4 @@ class ProductRepository(ABC):
 
     @abstractmethod
     async def save(self, product: Product) -> None:
-        pass
+        raise NotImplemented

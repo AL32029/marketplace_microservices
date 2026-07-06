@@ -6,7 +6,7 @@ from typing import Optional
 class Product:
     name: str
     price: float
-    stock: int
+    stock: int = 0
 
     id: Optional[int] = None
 
