@@ -14,9 +14,12 @@ class SQLAlchemyProductRepo(ProductRepository):
 
     async def save(self, product: Product) -> None:
         product_orm = domain_to_orm(product)
-        self.session.add(product_orm)
+
+        merged_orm = await self.session.merge(product_orm)
         await self.session.commit()
-        product = orm_to_domain(product_orm)
+
+        if product.id is None:
+            product.id = merged_orm.id
 
     async def get_by_id(self, product_id: int) -> Optional[Product]:
         product = await self.session.get(ProductORM, product_id)
