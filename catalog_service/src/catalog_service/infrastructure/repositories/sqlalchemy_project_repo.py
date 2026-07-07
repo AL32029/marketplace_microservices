@@ -1,5 +1,6 @@
-from typing import Optional
+from typing import Optional, List
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from catalog_service.application.ports.product_repo import ProductRepository
@@ -20,6 +21,10 @@ class SQLAlchemyProductRepo(ProductRepository):
 
         if product.id is None:
             product.id = merged_orm.id
+
+    async def get_all(self) -> List[Product]:
+        result = await self.session.stream_scalars(select(ProductORM))
+        return [orm_to_domain(item) async for item in result]
 
     async def get_by_id(self, product_id: int) -> Optional[Product]:
         product = await self.session.get(ProductORM, product_id)

@@ -8,7 +8,6 @@ from order_service.presentation.schemas.order_schemas import OrderResponse, Crea
 router = APIRouter(prefix='/orders', tags=['Orders'])
 
 async def get_use_case(request: Request) -> CreateOrderUseCase:
-    # Достаём фабрику из состояния и вызываем её (она создаст сессию)
     factory = request.app.state.services["create_order_use_case"]
     return await factory()
 
