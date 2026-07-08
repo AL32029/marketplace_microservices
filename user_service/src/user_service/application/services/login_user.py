@@ -1,5 +1,6 @@
 from user_service.application.ports.password_hasher_repo import PasswordHasherRepo
 from user_service.application.ports.user_repo import UserRepository
+from user_service.domain.exceptions.user_errors import InvalidUserLoginData
 
 
 class LoginUserUseCase:
@@ -11,11 +12,11 @@ class LoginUserUseCase:
         user = await self.user_repo.get_by_email(email)
 
         if user is None:
-            raise ValueError('Invalid email or password') # TODO: Реализовать кастомную ошибку
+            raise InvalidUserLoginData('Invalid email or password') # [MISC][DONE] Реализовать кастомную ошибку
 
-        password_hash = await self.password_hasher_repo.hash_password(password)
+        password_is_valid = self.password_hasher_repo.check_password(password, user.password_hash.value)
 
-        if user.password_hash != password_hash:
-            raise ValueError('Invalid email or password') # TODO: Реализовать кастомную ошибку
+        if not password_is_valid:
+            raise InvalidUserLoginData('Invalid email or password') # [MISC][DONE] Реализовать кастомную ошибку
 
         return user # TODO: Переделать на выдачу JWT токена

@@ -12,7 +12,7 @@ class GetProfileUseCase:
         user = await self.repo.get_by_id(user_id)
 
         if user is None:
-            return None  # TODO: Добавить кастомную ошибку
+            return None  
 
         return user
 
@@ -20,6 +20,6 @@ class GetProfileUseCase:
         user = await self.repo.get_by_email(email)
 
         if user is None:
-            return None  # TODO: Добавить кастомную ошибку
+            return None  
 
         return user
