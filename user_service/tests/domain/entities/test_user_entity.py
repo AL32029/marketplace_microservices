@@ -6,7 +6,7 @@ from user_service.domain.value_objects.password import Password
 
 
 def test_user_change_password():
-    """Тестирование функции change_password"""
+    """Тестирование смены пароля"""
     old_hash = "hashed_old_password"
     user = User(
         id=1,
@@ -24,7 +24,7 @@ def test_user_change_password():
 
 
 def test_user_update_profile():
-    """Тестирование функции update_profile"""
+    """Тестирование обновления full_name"""
     user = User(
         id=1,
         email=Email("user@example.com"),

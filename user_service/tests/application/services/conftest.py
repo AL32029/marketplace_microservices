@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from user_service.application.services.login_user import LoginUserUseCase
 from user_service.application.services.register_user import RegisterUserUseCase
+from user_service.domain.entities.user import User
 from user_service.infrastructure.db.models import Base
 from user_service.infrastructure.repositories.bcrypt_password_hasher_repo import BCryptPasswordHasherRepo
 from user_service.infrastructure.repositories.sqlalchemy_user_repo import SQLAlchemyUserRepo
@@ -45,3 +46,9 @@ async def login_user_use_case(user_repo, password_hasher_repo):
 @pytest.fixture
 async def register_user_use_case(user_repo, password_hasher_repo):
     return RegisterUserUseCase(user_repo, password_hasher_repo)
+
+
+@pytest.fixture
+async def user_orm_item(register_user_use_case) -> User:
+    user = await register_user_use_case.execute(email='user@example.com', full_name='Иванов Иван', password='123456789')
+    return user

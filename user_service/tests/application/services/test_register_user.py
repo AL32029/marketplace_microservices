@@ -4,6 +4,7 @@ from user_service.domain.exceptions.user_errors import EmailValidationError, Pas
 
 
 async def test_register_user(register_user_use_case):
+    """Тестирование регистрации пользователя"""
     user = await register_user_use_case.execute(
         email='user@example.com',
         full_name='Иванов Иван',
@@ -13,6 +14,7 @@ async def test_register_user(register_user_use_case):
 
 
 async def test_register_user_error_invalid_email(register_user_use_case):
+    """Тестирование ошибки валидации e-mail при регистрации"""
     with pytest.raises(EmailValidationError):
         await register_user_use_case.execute(
             email='userexample.com',
@@ -22,6 +24,7 @@ async def test_register_user_error_invalid_email(register_user_use_case):
 
 
 async def test_register_user_error_short_password(register_user_use_case):
+    """Тестирование ошибки валидации пароля при регистрации"""
     with pytest.raises(PasswordValidationError):
         await register_user_use_case.execute(
             email='user@example.com',
