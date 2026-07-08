@@ -11,7 +11,7 @@ class UserRepository(ABC):
         raise NotImplemented
 
     @abstractmethod
-    async def get_by_id(self, id: int) -> Optional[User]:
+    async def get_by_id(self, user_id: int) -> Optional[User]:
         """Получение профиля пользователя по ID"""
         raise NotImplemented
 

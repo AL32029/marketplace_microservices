@@ -13,8 +13,8 @@ class SQLAlchemyUserRepo(UserRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_by_id(self, id: int) -> Optional[User]:
-        result = await self.session.get(UserORM, id)
+    async def get_by_id(self, user_id: int) -> Optional[User]:
+        result = await self.session.get(UserORM, user_id)
 
         if result is None:
             return None

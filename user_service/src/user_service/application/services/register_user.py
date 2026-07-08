@@ -12,10 +12,10 @@ class RegisterUserUseCase:
 
     async def execute(self, email: str, full_name: str, password: str) -> User:
         password_domain = Password(password)
-        password_hash = await self.password_hasher_repo.hash_password(password_domain.value)
+        password_hash = self.password_hasher_repo.hash_password(password_domain.value)
         user = User(
             email=Email(email),
-            password_hash=password_hash,
+            password_hash=Password(password_hash),
             full_name=full_name,
             role='user'
         )
