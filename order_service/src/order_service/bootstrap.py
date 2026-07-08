@@ -7,8 +7,8 @@ from order_service.infrastructure.clients.http_catalog_client import HTTPCatalog
 from order_service.infrastructure.repositories.sqlalchemy_order_repo import SQLALchemyOrderRepo
 
 
-def build_services(session_maker: async_sessionmaker) -> dict:
-    catalog_client = HTTPCatalogClient(base_url=os.getenv("CATALOG_SERVICE_URL", "http://catalog-service"))
+def build_services(session_maker: async_sessionmaker, catalog_url: str) -> dict:
+    catalog_client = HTTPCatalogClient(base_url=catalog_url)
 
     async def get_use_case():
         async with session_maker() as session:

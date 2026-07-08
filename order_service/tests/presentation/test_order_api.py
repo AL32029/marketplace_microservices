@@ -34,8 +34,7 @@ async def test_create_order_endpoint():
             }
         )
 
-    # 5. Проверяем результат
-    assert response.status_code == 200, f"Response: {response.text}"
+    assert response.status_code == 200
     data = response.json()
     assert data["user_id"] == 1
     assert len(data["items"]) == 1

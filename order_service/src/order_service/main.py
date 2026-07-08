@@ -12,7 +12,9 @@ def create_app():
     engine = create_async_engine(db_url)
     session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
-    services = build_services(session_maker)
+    catalog_url: str = os.getenv('CATALOG_SERVICE_URL')
+
+    services = build_services(session_maker, catalog_url)
 
     app = FastAPI(title="Order Service")
 
