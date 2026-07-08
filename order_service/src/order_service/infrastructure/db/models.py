@@ -1,4 +1,3 @@
-# order_service/src/order_service/infrastructure/db/models.py
 import datetime
 from typing import List, Optional
 

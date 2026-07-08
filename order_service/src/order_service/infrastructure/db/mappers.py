@@ -1,4 +1,3 @@
-# order_service/src/order_service/infrastructure/db/mappers.py
 from order_service.domain.entities.order import Order, OrderStatus, OrderItem
 from order_service.infrastructure.db.models import OrderORM, OrderItemORM
 

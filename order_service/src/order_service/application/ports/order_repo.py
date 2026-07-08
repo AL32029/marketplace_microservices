@@ -1,4 +1,3 @@
-# order_service/src/order_service/application/ports/order_repo.py
 from abc import ABC, abstractmethod
 from typing import Optional
 
