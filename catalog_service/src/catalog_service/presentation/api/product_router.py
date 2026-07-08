@@ -21,8 +21,8 @@ async def get_product_stock(product_id: int, use_case=Depends(get_stock_use_case
         stock = await use_case.get_stock(product_id)
     except ProductNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
-    else:
-        return {'stock': stock}
+
+    return {'stock': stock}
 
 
 @router.post('/{product_id}/reserve')
@@ -38,18 +38,18 @@ async def reserve_product_stock(
         raise HTTPException(status_code=404, detail=str(e))
     except InsufficientStockError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    else:
-        return {'success': True}
+
+    return {'success': True}
 
 
-@router.get('/')
+@router.get('')
 async def get_all_products(use_case=Depends(get_all_products_use_case_depends)) -> List[ProductResponse]:
     """Получение списка всех товаров"""
     products = await use_case.get_all_products()
     return [domain_to_response(product) for product in products]
 
 
-@router.post('/')
+@router.post('')
 async def add_new_product(
         item_info: CreateProductRequest, use_case=Depends(create_product_use_case_depends)
 ) -> ProductResponse:
