@@ -1,10 +1,12 @@
 from typing import Optional
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from user_service.application.ports.user_repo import UserRepository
 from user_service.domain.entities.user import User
+from user_service.domain.exceptions.user_errors import UniqueEmailError
 from user_service.infrastructure.db.mappers import orm_to_domain, domain_to_orm
 from user_service.infrastructure.db.models import UserORM
 
@@ -30,9 +32,15 @@ class SQLAlchemyUserRepo(UserRepository):
         return orm_to_domain(result)
 
     async def save(self, user: User) -> None:
+        # [MISC][DONE] Добавить обработку ошибки на уникальный email
         orm_user = domain_to_orm(user)
 
-        self.session.add(orm_user)
+        try:
+            self.session.add(orm_user)
+        except IntegrityError:
+            await self.session.rollback()
+            raise UniqueEmailError('The specified email address is already in use')
+
         await self.session.commit()
 
         user.id = orm_user.id

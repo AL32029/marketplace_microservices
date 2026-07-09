@@ -13,5 +13,6 @@ class JWTTokenGeneratorRepo(TokenGeneratorRepo):
         return token
 
     def decode_token(self, token: str) -> dict:
+        # TODO: Добавить обработку ошибки при неверном токене
         sub = jwt.decode(token, self.secret_key, self.algorithm)
         return sub

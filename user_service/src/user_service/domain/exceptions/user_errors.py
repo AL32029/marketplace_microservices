@@ -16,3 +16,8 @@ class EmailValidationError(UserServiceError):
 class PasswordValidationError(UserServiceError):
     """Ошибка валидации пароля"""
     pass
+
+
+class UniqueEmailError(UserServiceError):
+    """Ошибка уникальности Email"""
+    pass
