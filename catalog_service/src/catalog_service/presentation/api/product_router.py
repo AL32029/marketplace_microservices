@@ -3,7 +3,9 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.params import Query
 
-from catalog_service.domain.exceptions.catalog_errors import ProductNotFoundError, InsufficientStockError
+from catalog_service.application.services.get_stock import GetStockUseCase
+from catalog_service.domain.exceptions.catalog_errors import ProductNotFoundError, InsufficientStockError, \
+    NegativeQuantityError
 from catalog_service.presentation.dependencies import (
     get_stock_use_case_depends, reserve_stock_use_case_depends,
     get_all_products_use_case_depends, create_product_use_case_depends
@@ -15,7 +17,7 @@ router = APIRouter(prefix='/products', tags=['Product Methods'])
 
 
 @router.get('/{product_id}/stock')
-async def get_product_stock(product_id: int, use_case=Depends(get_stock_use_case_depends)):
+async def get_product_stock(product_id: int, use_case: GetStockUseCase = Depends(get_stock_use_case_depends)):
     """Получение остатка товара"""
     try:
         stock = await use_case.get_stock(product_id)
@@ -34,6 +36,8 @@ async def reserve_product_stock(
     """Резервирование товара"""
     try:
         await use_case.reserve_stock(product_id, quantity)
+    except NegativeQuantityError as e:
+        raise HTTPException(status_code=422, detail=str(e))
     except ProductNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except InsufficientStockError as e:

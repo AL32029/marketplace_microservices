@@ -3,7 +3,7 @@ from sqlalchemy import NullPool
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from catalog_service.infrastructure.db.models import Base
-from catalog_service.infrastructure.repositories.sqlalchemy_project_repo import SQLAlchemyProductRepo
+from catalog_service.infrastructure.repositories.sqlalchemy_product_repo import SQLAlchemyProductRepo
 
 
 @pytest.fixture

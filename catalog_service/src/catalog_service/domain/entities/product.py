@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from catalog_service.domain.exceptions.catalog_errors import InsufficientStockError
+from catalog_service.domain.exceptions.catalog_errors import InsufficientStockError, NegativeQuantityError
 
 
 @dataclass
@@ -14,7 +14,7 @@ class Product:
 
     def reduce_stock(self, quantity: int):
         if quantity <= 0:
-            raise ValueError('The quantity must be positive')
+            raise NegativeQuantityError('The quantity must be positive')
 
         if quantity > self.stock:
             raise InsufficientStockError('The required quantity is missing from the warehouse')
@@ -23,6 +23,6 @@ class Product:
 
     def increase_stock(self, quantity: int):
         if quantity <= 0:
-            raise ValueError('The quantity must be positive')
+            raise NegativeQuantityError('The quantity must be positive')
 
         self.stock += quantity

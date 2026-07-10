@@ -4,7 +4,7 @@ from catalog_service.application.services.create_product import CreateProductUse
 from catalog_service.application.services.get_all_products import GetAllProductsUseCase
 from catalog_service.application.services.get_stock import GetStockUseCase
 from catalog_service.application.services.reserve_stock import ReserveStockUseCase
-from catalog_service.infrastructure.repositories.sqlalchemy_project_repo import SQLAlchemyProductRepo
+from catalog_service.infrastructure.repositories.sqlalchemy_product_repo import SQLAlchemyProductRepo
 
 
 def build_services() -> dict:

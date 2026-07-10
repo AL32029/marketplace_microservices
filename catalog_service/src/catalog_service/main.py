@@ -14,7 +14,7 @@ def create_app():
 
     services = build_services()
 
-    app = FastAPI(title="Order Service")
+    app = FastAPI(title="Catalog Service")
 
     app.state.session_maker = session_maker
     app.state.services = services
