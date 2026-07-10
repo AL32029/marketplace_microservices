@@ -3,9 +3,12 @@ from httpx import AsyncClient, ASGITransport
 from unittest.mock import AsyncMock
 from order_service.main import app
 from order_service.domain.entities.order import Order, OrderStatus, OrderItem
+from order_service.presentation.dependencies import create_order_use_case_depends
+
 
 @pytest.mark.asyncio
 async def test_create_order_endpoint():
+    """Тестирование эндпоинта POST /orders/"""
     mock_use_case = AsyncMock()
     mock_use_case.execute.return_value = Order(
         id=1,
@@ -15,14 +18,11 @@ async def test_create_order_endpoint():
         total=20.0
     )
 
-    async def mock_factory():
-        return mock_use_case
-
-    app.state.services["create_order_use_case"] = mock_factory
+    app.dependency_overrides[create_order_use_case_depends] = lambda: mock_use_case
 
     async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://test"
+            transport=ASGITransport(app=app),
+            base_url="http://test"
     ) as client:
         response = await client.post(
             "/orders/",
@@ -45,5 +45,4 @@ async def test_create_order_endpoint():
         items=[OrderItem(product_id=1, quantity=2, price=10.0)]
     )
 
-    from order_service.bootstrap import build_services
-    app.state.services["create_order_use_case"] = build_services(app.state.session_maker)["create_order_use_case"]
+    app.dependency_overrides.clear()

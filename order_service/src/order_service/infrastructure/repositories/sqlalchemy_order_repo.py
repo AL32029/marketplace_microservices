@@ -8,7 +8,7 @@ from order_service.infrastructure.db.mappers import domain_to_orm, orm_to_domain
 from order_service.infrastructure.db.models import OrderORM
 
 
-class SQLALchemyOrderRepo(OrderRepository):
+class SQLAlchemyOrderRepo(OrderRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 

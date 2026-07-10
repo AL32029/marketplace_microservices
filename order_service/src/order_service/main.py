@@ -14,7 +14,7 @@ def create_app():
 
     catalog_url: str = os.getenv('CATALOG_SERVICE_URL')
 
-    services = build_services(session_maker, catalog_url)
+    services = build_services(catalog_url)
 
     app = FastAPI(title="Order Service")
 

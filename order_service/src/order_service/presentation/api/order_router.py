@@ -1,20 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 
 from order_service.application.services.create_order import CreateOrderUseCase
 from order_service.domain.exceptions.catalog_errors import ProductNotFoundError, CatalogUnavailableError
+from order_service.presentation.dependencies.use_cases.create_order import create_order_use_case_depends
 from order_service.presentation.mappers.order_mappers import request_to_domain, domain_to_response
 from order_service.presentation.schemas.order_schemas import OrderResponse, CreateOrderRequest
 
 router = APIRouter(prefix='/orders', tags=['Orders'])
 
-async def get_use_case(request: Request) -> CreateOrderUseCase:
-    factory = request.app.state.services["create_order_use_case"]
-    return await factory()
-
 @router.post('/', response_model=OrderResponse)
 async def create_order(
         request: CreateOrderRequest,
-        user_case: CreateOrderUseCase = Depends(get_use_case)
+        user_case: CreateOrderUseCase = Depends(create_order_use_case_depends)
 ):
     try:
         user_id, items = request_to_domain(request)

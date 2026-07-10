@@ -18,6 +18,7 @@ def order_item():
 
 @pytest.mark.asyncio
 async def test_check_stock_returns_true_if_stock_sufficient(catalog_client, order_item, httpx_mock):
+    """Тестирование выполнения эндпоинта GET /products/{product_id}/stock при наличии требуемого количества товара"""
     httpx_mock.add_response(
         method='GET',
         url=f'http://test.local/products/{order_item.product_id}/stock',
@@ -32,6 +33,7 @@ async def test_check_stock_returns_true_if_stock_sufficient(catalog_client, orde
 
 @pytest.mark.asyncio
 async def test_check_stock_returns_false_if_stock_insufficient(catalog_client, order_item, httpx_mock):
+    """Тестирование выполнения эндпоинта GET /products/{product_id}/stock при отсутствии требуемого количества товара"""
     httpx_mock.add_response(
         method='GET',
         url=f'http://test.local/products/{order_item.product_id}/stock',
@@ -46,6 +48,7 @@ async def test_check_stock_returns_false_if_stock_insufficient(catalog_client, o
 
 @pytest.mark.asyncio
 async def test_check_stock_returns_false_if_product_not_found(catalog_client, order_item, httpx_mock):
+    """Тестирование выполнения эндпоинта GET /products/{product_id}/stock при отсутствии требуемого товара"""
     httpx_mock.add_response(
         method='GET',
         url=f'http://test.local/products/{order_item.product_id}/stock',
@@ -58,6 +61,7 @@ async def test_check_stock_returns_false_if_product_not_found(catalog_client, or
 
 @pytest.mark.asyncio
 async def test_check_stock_raises_if_server_error(catalog_client, order_item, httpx_mock):
+    """Тестирование выполнения эндпоинта GET /products/{product_id}/stock при ошибке сервера"""
     httpx_mock.add_response(
         method='GET',
         url=f'http://test.local/products/{order_item.product_id}/stock',
@@ -70,6 +74,7 @@ async def test_check_stock_raises_if_server_error(catalog_client, order_item, ht
 
 @pytest.mark.asyncio
 async def test_check_stock_raises_if_timeout(catalog_client, order_item, httpx_mock):
+    """Тестирование выполнения эндпоинта GET /products/{product_id}/stock при таймауте"""
     httpx_mock.add_exception(
         method='GET',
         url=f'http://test.local/products/{order_item.product_id}/stock',
