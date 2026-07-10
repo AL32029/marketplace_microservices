@@ -1,21 +1,22 @@
-from pydantic import BaseModel
-
-from user_service.domain.value_objects.email import Email
-from user_service.domain.value_objects.password import Password
+from pydantic import BaseModel, EmailStr
 
 
 class UserRegisterSchema(BaseModel):
-    email: Email
-    password: Password
+    email: EmailStr
+    password: str
     full_name: str
 
 
 class UserLoginSchema(BaseModel):
-    email: Email
-    password: Password
+    email: EmailStr
+    password: str
 
 class UserProfileResponse(BaseModel):
     id: int
-    email: Email
+    email: EmailStr
     full_name: str
     role: str
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = 'bearer'

@@ -21,3 +21,17 @@ class PasswordValidationError(UserServiceError):
 class UniqueEmailError(UserServiceError):
     """Ошибка уникальности Email"""
     pass
+
+
+class InvalidJWTTokenError(UserServiceError):
+    """Ошибка валидации JWT токена"""
+    pass
+
+
+class JWTTokenExpiredError(UserServiceError):
+    """Ошибка истечения срока действия JWT токена"""
+    pass
+
+class InvalidJWTTokenSubError(UserServiceError):
+    """Ошибка валидации sub JWT токена"""
+    pass

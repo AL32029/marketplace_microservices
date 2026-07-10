@@ -17,6 +17,8 @@ def create_app():
     app = FastAPI(title="User Service")
 
     app.state.session_maker = session_maker
+    app.state.jwt_secret_key = os.getenv('JWT_SECRET_KEY')
+    app.state.jwt_algorithm = os.getenv('JWT_ALGORITHM')
     app.state.services = services
 
     app.include_router(router)
