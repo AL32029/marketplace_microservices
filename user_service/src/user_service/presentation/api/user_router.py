@@ -5,7 +5,7 @@ from user_service.application.services.login_user import LoginUserUseCase
 from user_service.application.services.register_user import RegisterUserUseCase
 from user_service.domain.exceptions.user_errors import (EmailValidationError, PasswordValidationError, UniqueEmailError,
                                                         InvalidUserLoginData)
-from user_service.presentation.api.mappers.user_mapper import domain_to_response
+from user_service.presentation.mappers.user_mapper import domain_to_response
 from user_service.presentation.dependencies import (register_user_use_case_depends, login_user_use_case_depends,
                                                     )
 from user_service.presentation.dependencies.use_cases.get_profile import get_profile_use_case_depends

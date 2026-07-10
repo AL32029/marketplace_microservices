@@ -13,7 +13,7 @@ class JWTTokenGeneratorRepo(TokenGeneratorRepo):
         self.algorithm = algorithm
 
     def encode_token(self, sub: dict, expires_in: int = 3600) -> str:
-        sub['expires_to'] = (datetime.datetime.now(datetime.UTC) + datetime.timedelta(seconds=expires_in)).timestamp()
+        sub['exp'] = (datetime.datetime.now(datetime.UTC) + datetime.timedelta(seconds=expires_in)).timestamp()
 
         token = jwt.encode(sub, self.secret_key, self.algorithm)
 
@@ -25,10 +25,10 @@ class JWTTokenGeneratorRepo(TokenGeneratorRepo):
         except JWTError:
             raise InvalidJWTTokenError('Invalid JWT token')
 
-        if 'expires_to' not in sub:
-            raise InvalidJWTTokenSubError('The JWT token data does not have an expires_to field')
+        if 'exp' not in sub:
+            raise InvalidJWTTokenSubError('The JWT token data does not have an exp field')
 
-        if sub['expires_to'] < datetime.datetime.now(datetime.UTC).timestamp():
+        if sub['exp'] < datetime.datetime.now(datetime.UTC).timestamp():
             raise JWTTokenExpiredError('The validity period of the JWT token has expired')
 
         return sub

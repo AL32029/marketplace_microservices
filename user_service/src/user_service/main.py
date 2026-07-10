@@ -12,13 +12,11 @@ def create_app():
     engine = create_async_engine(db_url)
     session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
-    services = build_services()
+    services = build_services(os.getenv('JWT_SECRET_KEY'), os.getenv('JWT_ALGORITHM'))
 
     app = FastAPI(title="User Service")
 
     app.state.session_maker = session_maker
-    app.state.jwt_secret_key = os.getenv('JWT_SECRET_KEY')
-    app.state.jwt_algorithm = os.getenv('JWT_ALGORITHM')
     app.state.services = services
 
     app.include_router(router)
