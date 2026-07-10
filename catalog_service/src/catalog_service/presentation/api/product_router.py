@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.params import Query
 
 from catalog_service.application.services.get_stock import GetStockUseCase
+from catalog_service.application.services.reserve_stock import ReserveStockUseCase
 from catalog_service.domain.exceptions.catalog_errors import ProductNotFoundError, InsufficientStockError, \
     NegativeQuantityError
 from catalog_service.presentation.dependencies import (
@@ -31,7 +32,7 @@ async def get_product_stock(product_id: int, use_case: GetStockUseCase = Depends
 async def reserve_product_stock(
         product_id: int,
         quantity: int = Query(ge=1),
-        use_case=Depends(reserve_stock_use_case_depends)
+        use_case: ReserveStockUseCase = Depends(reserve_stock_use_case_depends)
 ):
     """Резервирование товара"""
     try:
