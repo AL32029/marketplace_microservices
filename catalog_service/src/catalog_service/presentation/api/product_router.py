@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.params import Query
 
+from catalog_service.application.services.get_all_products import GetAllProductsUseCase
 from catalog_service.application.services.get_stock import GetStockUseCase
 from catalog_service.application.services.reserve_stock import ReserveStockUseCase
 from catalog_service.domain.exceptions.catalog_errors import ProductNotFoundError, InsufficientStockError, \
@@ -48,7 +49,9 @@ async def reserve_product_stock(
 
 
 @router.get('')
-async def get_all_products(use_case=Depends(get_all_products_use_case_depends)) -> List[ProductResponse]:
+async def get_all_products(
+        use_case: GetAllProductsUseCase = Depends(get_all_products_use_case_depends)
+) -> List[ProductResponse]:
     """Получение списка всех товаров"""
     products = await use_case.get_all_products()
     return [domain_to_response(product) for product in products]
