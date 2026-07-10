@@ -32,7 +32,6 @@ class SQLAlchemyUserRepo(UserRepository):
         return orm_to_domain(result)
 
     async def save(self, user: User) -> None:
-        # [MISC][DONE] Добавить обработку ошибки на уникальный email
         orm_user = domain_to_orm(user)
 
         try:

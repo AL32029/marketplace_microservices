@@ -10,7 +10,7 @@ class ReserveStockUseCase:
         product = await self.repo.get_by_id(product_id)
 
         if product is None:
-            raise ProductNotFoundError(f'Product with ID {product_id} not found')  # [MISC][DONE] Заменить на кастомную ошибку
+            raise ProductNotFoundError(f'Product with ID {product_id} not found')
 
         product.reduce_stock(quantity)
         await self.repo.save(product)

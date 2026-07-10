@@ -15,12 +15,12 @@ class LoginUserUseCase:
         user = await self.user_repo.get_by_email(email)
 
         if user is None:
-            raise InvalidUserLoginData('Invalid email or password')  # [MISC][DONE] Реализовать кастомную ошибку
+            raise InvalidUserLoginData('Invalid email or password')  
 
         password_is_valid = self.password_hasher_repo.check_password(password, user.password_hash.value)
 
         if not password_is_valid:
-            raise InvalidUserLoginData('Invalid email or password')  # [MISC][DONE] Реализовать кастомную ошибку
+            raise InvalidUserLoginData('Invalid email or password')  
 
         token = self.jwt_token_repo.encode_token({'id': user.id})
 

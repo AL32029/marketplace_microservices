@@ -10,7 +10,8 @@ from user_service.infrastructure.repositories.sqlalchemy_user_repo import SQLAlc
 from user_service.presentation.dependencies.repositories.jwt_token_generator import jwt_token_generator_repo_depends
 from user_service.presentation.dependencies.repositories.user_repo import user_repo_depends
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/login')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/token')
+
 
 async def get_current_user(
         token: str = Depends(oauth2_scheme),

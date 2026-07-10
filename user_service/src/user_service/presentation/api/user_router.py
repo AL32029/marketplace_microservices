@@ -35,34 +35,39 @@ async def register_user(
 
 
 @router.post(
-    '/auth/login',
+    '/auth/token',
     response_model=TokenResponse,
-    openapi_extra={
-        "requestBody": {
-            "content": {
-                "application/x-www-form-urlencoded": {
-                    "schema": UserLoginSchema.model_json_schema()
-                }
-            }
-        }
-    }
 )
-async def login_user(
+async def login_user_token(
         login_data: OAuth2PasswordRequestForm = Depends(),
         login_use_case: LoginUserUseCase = Depends(login_user_use_case_depends)
 ):
-    # [MISC][DONE] Реализовать эндпоинт login_user
     try:
         token = await login_use_case.login(email=login_data.username, password=login_data.password)
     except InvalidUserLoginData as e:
         raise HTTPException(status_code=403, detail=str(e))
 
-    return TokenResponse(access_token=token)  # [MISC][DONE] Переделать на выдачу токена
+    return TokenResponse(access_token=token)
+
+
+@router.post(
+    '/auth/login',
+    response_model=TokenResponse,
+)
+async def login_user_creds(
+        login_data: UserLoginSchema,
+        login_use_case: LoginUserUseCase = Depends(login_user_use_case_depends)
+):
+    try:
+        token = await login_use_case.login(email=login_data.email, password=login_data.password)
+    except InvalidUserLoginData as e:
+        raise HTTPException(status_code=403, detail=str(e))
+
+    return TokenResponse(access_token=token)
 
 
 @router.get('/users/me', response_model=UserProfileResponse)
 async def get_user_profile(
         user: User = Depends(get_current_user)
 ):
-    # [MISC][DONE] Реализовать эндпоинт get_user_profile
     return domain_to_response(user)

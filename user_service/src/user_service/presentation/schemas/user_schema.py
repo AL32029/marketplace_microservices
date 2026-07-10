@@ -8,7 +8,7 @@ class UserRegisterSchema(BaseModel):
 
 
 class UserLoginSchema(BaseModel):
-    username: EmailStr
+    email: EmailStr
     password: str
 
 class UserProfileResponse(BaseModel):
