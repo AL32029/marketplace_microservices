@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class TokenGeneratorRepo(ABC):
     @abstractmethod
-    def encode_token(self, sub: dict, expires_int: int = 3600) -> str:
+    def encode_token(self, sub: dict, exp: int = 3600) -> str:
         """Генерация токена"""
         raise NotImplemented
 

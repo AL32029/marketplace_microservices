@@ -12,8 +12,8 @@ class JWTTokenGeneratorRepo(TokenGeneratorRepo):
         self.secret_key = secret_key
         self.algorithm = algorithm
 
-    def encode_token(self, sub: dict, expires_in: int = 3600) -> str:
-        sub['exp'] = (datetime.datetime.now(datetime.UTC) + datetime.timedelta(seconds=expires_in)).timestamp()
+    def encode_token(self, sub: dict, exp: int = 3600) -> str:
+        sub['exp'] = (datetime.datetime.now(datetime.UTC) + datetime.timedelta(seconds=exp)).timestamp()
 
         token = jwt.encode(sub, self.secret_key, self.algorithm)
 
