@@ -7,6 +7,7 @@ from user_service.application.services.register_user import RegisterUserUseCase
 from user_service.domain.entities.user import User
 from user_service.infrastructure.db.models import Base
 from user_service.infrastructure.repositories.bcrypt_password_hasher_repo import BCryptPasswordHasherRepo
+from user_service.infrastructure.repositories.jwt_token_generator import JWTTokenGeneratorRepo
 from user_service.infrastructure.repositories.sqlalchemy_user_repo import SQLAlchemyUserRepo
 
 
@@ -37,10 +38,14 @@ async def user_repo(async_session_fixture):
 async def password_hasher_repo():
     return BCryptPasswordHasherRepo()
 
+@pytest.fixture
+async def jwt_token_repo():
+    return JWTTokenGeneratorRepo('test', 'HS256')
+
 
 @pytest.fixture
-async def login_user_use_case(user_repo, password_hasher_repo):
-    return LoginUserUseCase(user_repo, password_hasher_repo)
+async def login_user_use_case(user_repo, password_hasher_repo, jwt_token_repo):
+    return LoginUserUseCase(user_repo, password_hasher_repo, jwt_token_repo)
 
 
 @pytest.fixture

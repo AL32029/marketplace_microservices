@@ -1,15 +1,13 @@
 import pytest
 
-from user_service.domain.entities.user import User
 from user_service.domain.exceptions.user_errors import InvalidUserLoginData
-from user_service.tests.application.services.conftest import login_user_use_case
 
 
 async def test_login_user(login_user_use_case, user_orm_item):
     """Тестирование авторизации пользователя при верных данных"""
     user = await login_user_use_case.login('user@example.com', '123456789')
     assert user is not None
-    assert isinstance(user, User)
+    assert isinstance(user, str)
 
 
 @pytest.mark.parametrize(

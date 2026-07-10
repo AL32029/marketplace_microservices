@@ -37,11 +37,10 @@ class SQLAlchemyUserRepo(UserRepository):
 
         try:
             self.session.add(orm_user)
+            await self.session.commit()
         except IntegrityError:
             await self.session.rollback()
             raise UniqueEmailError('The specified email address is already in use')
-
-        await self.session.commit()
 
         user.id = orm_user.id
         user.created_at = orm_user.created_at

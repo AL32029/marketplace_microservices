@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 
 from user_service.application.services.login_user import LoginUserUseCase
 from user_service.application.services.register_user import RegisterUserUseCase
@@ -33,14 +34,26 @@ async def register_user(
     return domain_to_response(user)
 
 
-@router.post('/auth/login', response_model=TokenResponse)
+@router.post(
+    '/auth/login',
+    response_model=TokenResponse,
+    openapi_extra={
+        "requestBody": {
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": UserLoginSchema.model_json_schema()
+                }
+            }
+        }
+    }
+)
 async def login_user(
-        login_data: UserLoginSchema,
+        login_data: OAuth2PasswordRequestForm = Depends(),
         login_use_case: LoginUserUseCase = Depends(login_user_use_case_depends)
 ):
     # [MISC][DONE] Реализовать эндпоинт login_user
     try:
-        token = await login_use_case.login(email=login_data.email, password=login_data.password)
+        token = await login_use_case.login(email=login_data.username, password=login_data.password)
     except InvalidUserLoginData as e:
         raise HTTPException(status_code=403, detail=str(e))
 
