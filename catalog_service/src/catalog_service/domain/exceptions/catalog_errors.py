@@ -1,4 +1,3 @@
-# TODO: Покрыть исключения кастомными ошибками
 class CatalogServiceError(Exception):
     """Базовое исключение для ошибок Catalog Service"""
     pass
