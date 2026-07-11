@@ -1,7 +1,7 @@
 from fastapi import Request, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from user_service.application.services.get_profile import GetProfileUseCase
+from user_service.application.services import GetProfileUseCase
 from user_service.presentation.dependencies.db.get_db_session import get_db
 
 

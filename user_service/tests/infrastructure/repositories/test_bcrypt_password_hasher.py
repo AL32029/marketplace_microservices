@@ -1,6 +1,6 @@
 import pytest
 
-from user_service.infrastructure.repositories.bcrypt_password_hasher_repo import BCryptPasswordHasherRepo
+from user_service.infrastructure.repositories import BCryptPasswordHasherRepo
 
 
 @pytest.fixture

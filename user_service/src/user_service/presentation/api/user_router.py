@@ -1,17 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
-from user_service.application.services.login_user import LoginUserUseCase
-from user_service.application.services.register_user import RegisterUserUseCase
+from user_service.application.services import LoginUserUseCase, RegisterUserUseCase
 from user_service.domain.entities.user import User
 from user_service.domain.exceptions.user_errors import (EmailValidationError, PasswordValidationError, UniqueEmailError,
                                                         InvalidUserLoginData)
 from user_service.presentation.dependencies import (register_user_use_case_depends, login_user_use_case_depends,
-                                                    )
-from user_service.presentation.dependencies.use_cases.current_profile import get_current_user
+                                                    get_current_user)
 from user_service.presentation.mappers.user_mapper import domain_to_response
-from user_service.presentation.schemas.user_schema import UserRegisterSchema, UserLoginSchema, TokenResponse, \
-    UserProfileResponse
+from user_service.presentation.schemas.user_schema import (UserRegisterSchema, UserLoginSchema, TokenResponse,
+                                                           UserProfileResponse)
 
 router = APIRouter()
 
@@ -45,7 +43,7 @@ async def login_user_token(
     try:
         token = await login_use_case.login(email=login_data.username, password=login_data.password)
     except InvalidUserLoginData as e:
-        raise HTTPException(status_code=403, detail=str(e))
+        raise HTTPException(status_code=401, detail=str(e))
 
     return TokenResponse(access_token=token)
 
@@ -61,7 +59,7 @@ async def login_user_creds(
     try:
         token = await login_use_case.login(email=login_data.email, password=login_data.password)
     except InvalidUserLoginData as e:
-        raise HTTPException(status_code=403, detail=str(e))
+        raise HTTPException(status_code=401, detail=str(e))
 
     return TokenResponse(access_token=token)
 

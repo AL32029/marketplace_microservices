@@ -2,7 +2,7 @@ from fastapi import Request, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from user_service.application.ports.password_hasher_repo import PasswordHasherRepo
-from user_service.application.services.register_user import RegisterUserUseCase
+from user_service.application.services import RegisterUserUseCase
 from user_service.presentation.dependencies import get_db, password_hasher_repo_depends
 
 

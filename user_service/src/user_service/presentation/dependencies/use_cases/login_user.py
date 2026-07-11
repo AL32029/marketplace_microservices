@@ -2,8 +2,8 @@ from fastapi import Request, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from user_service.application.ports.password_hasher_repo import PasswordHasherRepo
-from user_service.application.services.login_user import LoginUserUseCase
-from user_service.infrastructure.repositories.jwt_token_generator import JWTTokenGeneratorRepo
+from user_service.application.services import LoginUserUseCase
+from user_service.infrastructure.repositories import JWTTokenGeneratorRepo
 from user_service.presentation.dependencies.db.get_db_session import get_db
 from user_service.presentation.dependencies.repositories.jwt_token_generator import jwt_token_generator_repo_depends
 from user_service.presentation.dependencies.repositories.password_hasher import password_hasher_repo_depends

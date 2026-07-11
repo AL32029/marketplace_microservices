@@ -1,6 +1,6 @@
 import pytest
 
-from user_service.application.services.get_profile import GetProfileUseCase
+from user_service.application.services import GetProfileUseCase
 
 
 @pytest.fixture

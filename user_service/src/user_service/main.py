@@ -15,10 +15,12 @@ async def lifespan(app: FastAPI):
     engine = create_async_engine(database_settings.DB_URL.unicode_string())
     session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
-    services = build_services(jwt_settings)
 
     app.state.db_engine = engine
     app.state.db_session = session_maker
+
+    services = build_services(jwt_settings)
+
     app.state.services = services
 
     yield

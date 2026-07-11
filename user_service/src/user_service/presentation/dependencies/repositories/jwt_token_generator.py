@@ -1,6 +1,6 @@
 from fastapi import Request
 
-from user_service.infrastructure.repositories.jwt_token_generator import JWTTokenGeneratorRepo
+from user_service.infrastructure.repositories import JWTTokenGeneratorRepo
 
 
 async def jwt_token_generator_repo_depends(request: Request) -> JWTTokenGeneratorRepo:
