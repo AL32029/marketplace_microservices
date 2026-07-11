@@ -1,27 +1,30 @@
-import os
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from user_service.bootstrap import build_services
+from user_service.infrastructure.config import DatabaseSettings, JWTSettings
 from user_service.presentation.api.user_router import router
 
 
-def create_app():
-    db_url = os.getenv("DB_URL", "postgresql+asyncpg://user:pass@localhost/catalog_service")
-    engine = create_async_engine(db_url)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    database_settings = DatabaseSettings()
+    jwt_settings = JWTSettings()
+    engine = create_async_engine(database_settings.DB_URL.unicode_string())
     session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
-    services = build_services(os.getenv('JWT_SECRET_KEY'), os.getenv('JWT_ALGORITHM'))
+    services = build_services(jwt_settings)
 
-    app = FastAPI(title="User Service")
-
-    app.state.session_maker = session_maker
+    app.state.db_engine = engine
+    app.state.db_session = session_maker
     app.state.services = services
 
-    app.include_router(router)
+    yield
 
-    return app
+    await app.state.db_engine.dispose()
 
 
-app = create_app()
+app = FastAPI(title="User Service", lifespan=lifespan)
+app.include_router(router)

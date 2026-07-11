@@ -4,12 +4,13 @@ from user_service.application.ports.password_hasher_repo import PasswordHasherRe
 from user_service.application.services.get_profile import GetProfileUseCase
 from user_service.application.services.login_user import LoginUserUseCase
 from user_service.application.services.register_user import RegisterUserUseCase
+from user_service.infrastructure.config import JWTSettings
 from user_service.infrastructure.repositories.bcrypt_password_hasher_repo import BCryptPasswordHasherRepo
 from user_service.infrastructure.repositories.jwt_token_generator import JWTTokenGeneratorRepo
 from user_service.infrastructure.repositories.sqlalchemy_user_repo import SQLAlchemyUserRepo
 
 
-def build_services(jwt_secret_key: str, jwt_algorithm: str) -> dict:
+def build_services(jwt_settings: JWTSettings) -> dict:
     async def password_hasher_repo():
         return BCryptPasswordHasherRepo()
 
@@ -25,7 +26,7 @@ def build_services(jwt_secret_key: str, jwt_algorithm: str) -> dict:
         return GetProfileUseCase(SQLAlchemyUserRepo(session))
 
     async def jwt_token_generator_repo():
-        return JWTTokenGeneratorRepo(jwt_secret_key, jwt_algorithm)
+        return JWTTokenGeneratorRepo(jwt_settings.SECRET_KEY, jwt_settings.ALGORITHM)
 
     return {
         'password_hasher_repo': password_hasher_repo,
