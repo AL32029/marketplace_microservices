@@ -1,29 +1,31 @@
 import os
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from order_service.bootstrap import build_services
+from order_service.infrastructure.config import DatabaseSettings
 from order_service.presentation.api.order_router import router
 
 
-def create_app():
-    db_url = os.getenv("DB_URL", "postgresql+asyncpg://user:pass@localhost/orders_db")
-    engine = create_async_engine(db_url)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    database_settings = DatabaseSettings()
+    engine = create_async_engine(database_settings.DB_URL.unicode_string())
     session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
-    catalog_url: str = os.getenv('CATALOG_SERVICE_URL')
+    app.state.db_engine = engine
+    app.state.db_session = session_maker
 
-    services = build_services(catalog_url)
+    services = build_services(os.getenv('CATALOG_SERVICE_URL'))
 
-    app = FastAPI(title="Order Service")
-
-    app.state.session_maker = session_maker
     app.state.services = services
 
-    app.include_router(router)
+    yield
 
-    return app
+    await app.state.db_engine.dispose()
 
 
-app = create_app()
+app = FastAPI(title="Order Service", lifespan=lifespan)
+app.include_router(router)

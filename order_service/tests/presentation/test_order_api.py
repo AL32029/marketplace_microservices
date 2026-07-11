@@ -1,8 +1,10 @@
+from unittest.mock import AsyncMock
+
 import pytest
 from httpx import AsyncClient, ASGITransport
-from unittest.mock import AsyncMock
-from order_service.main import app
+
 from order_service.domain.entities.order import Order, OrderStatus, OrderItem
+from order_service.main import app
 from order_service.presentation.dependencies import create_order_use_case_depends
 
 
