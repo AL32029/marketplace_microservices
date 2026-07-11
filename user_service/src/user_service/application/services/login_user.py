@@ -24,4 +24,4 @@ class LoginUserUseCase:
 
         token = self.jwt_token_repo.encode_token({'id': user.id})
 
-        return token  # [MISC][INPROGRESS] Переделать на выдачу JWT токена
+        return token  

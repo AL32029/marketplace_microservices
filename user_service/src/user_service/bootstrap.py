@@ -1,13 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from user_service.application.ports.password_hasher_repo import PasswordHasherRepo
-from user_service.application.services.get_profile import GetProfileUseCase
-from user_service.application.services.login_user import LoginUserUseCase
-from user_service.application.services.register_user import RegisterUserUseCase
+from user_service.application.ports.token_generator import TokenGeneratorRepo
+from user_service.application.services import GetProfileUseCase, LoginUserUseCase, RegisterUserUseCase
 from user_service.infrastructure.config import JWTSettings
-from user_service.infrastructure.repositories.bcrypt_password_hasher_repo import BCryptPasswordHasherRepo
-from user_service.infrastructure.repositories.jwt_token_generator import JWTTokenGeneratorRepo
-from user_service.infrastructure.repositories.sqlalchemy_user_repo import SQLAlchemyUserRepo
+from user_service.infrastructure.repositories import BCryptPasswordHasherRepo, JWTTokenGeneratorRepo, SQLAlchemyUserRepo
 
 
 def build_services(jwt_settings: JWTSettings) -> dict:
@@ -18,7 +15,7 @@ def build_services(jwt_settings: JWTSettings) -> dict:
         return RegisterUserUseCase(SQLAlchemyUserRepo(session), password_repo)
 
     async def login_user_use_case(
-            session: AsyncSession, password_repo: PasswordHasherRepo, jwt_token_repo: JWTTokenGeneratorRepo
+            session: AsyncSession, password_repo: PasswordHasherRepo, jwt_token_repo: TokenGeneratorRepo
     ):
         return LoginUserUseCase(SQLAlchemyUserRepo(session), password_repo, jwt_token_repo)
 
