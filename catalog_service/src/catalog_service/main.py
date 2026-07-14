@@ -1,30 +1,41 @@
 from contextlib import asynccontextmanager
 
+from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from catalog_service.bootstrap import build_services
 from catalog_service.infrastructure.config import DatabaseSettings
+from catalog_service.infrastructure.di import get_dishka_container
 from catalog_service.presentation.api.product_router import router
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    database_settings = DatabaseSettings()
-    engine = create_async_engine(database_settings.DB_URL.unicode_string())
-    session_maker = async_sessionmaker(engine, expire_on_commit=False)
+def create_app(enable_lifespan: bool = True, container=None) -> FastAPI:
+    if enable_lifespan:
+        @asynccontextmanager
+        async def lifespan(app: FastAPI):
+            database_settings = DatabaseSettings()
+            engine = create_async_engine(database_settings.DB_URL.unicode_string())
+            session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
-    app.state.db_engine = engine
-    app.state.db_session = session_maker
+            app.state.db_engine = engine
+            app.state.db_session = session_maker
 
-    services = build_services()
+            yield
 
-    app.state.services = services
+            await app.state.db_engine.dispose()
+    else:
+        lifespan = None
 
-    yield
+    app = FastAPI(lifespan=lifespan)
 
-    await app.state.db_engine.dispose()
+    if container is None:
+        container = get_dishka_container()
+
+    setup_dishka(container, app)
+
+    app.include_router(router)
+
+    return app
 
 
-app = FastAPI(title="Catalog Service", lifespan=lifespan)
-app.include_router(router)
+app = create_app()

@@ -1,18 +1,21 @@
 import pytest
 
 from catalog_service.domain.entities.product import Product
-from catalog_service.domain.exceptions.catalog_errors import InsufficientStockError, NegativeQuantityError
+from catalog_service.domain.exceptions.catalog_errors import (
+    InsufficientStockError,
+    NegativeQuantityError,
+)
 
 
 def test_product_reduce_stock():
-    """Тестирование метода reduce_stock"""
+    """Product должен вернуть остаток на складе 2 единицы"""
     product = Product(id=1, name='Вода дистиллированная', price=50, stock=5)
     product.reduce_stock(3)
     assert product.stock == 2
 
 
 def test_product_reduce_raises_if_stock_negative():
-    """Тестирование ошибки вызова reduce_stock с отрицательным количеством"""
+    """Product должен вернуть NegativeQuantityError"""
     product = Product(id=1, name='Вода дистиллированная', price=50, stock=5)
 
     with pytest.raises(NegativeQuantityError):
@@ -20,7 +23,7 @@ def test_product_reduce_raises_if_stock_negative():
 
 
 def test_product_reduce_raises_if_stock_insufficient():
-    """Тестирование ошибки вызова reduce_stock с количеством, превышающем запасы"""
+    """Product должен вернуть InsufficientStockError"""
     product = Product(id=1, name='Вода дистиллированная', price=50, stock=5)
 
     with pytest.raises(InsufficientStockError):
@@ -28,7 +31,7 @@ def test_product_reduce_raises_if_stock_insufficient():
 
 
 def test_product_increase_stock():
-    """Тестирование метода increase_stock"""
+    """Product должен вернуть остаток на складе 15 единиц"""
     product = Product(id=1, name='Вода дистиллированная', price=50, stock=5)
 
     product.increase_stock(10)
@@ -36,7 +39,7 @@ def test_product_increase_stock():
 
 
 def test_product_increase_raises_if_stock_negative():
-    """Тестирование ошибки вызова increase_stock с отрицательным количеством"""
+    """Product должен вернуть NegativeQuantityError"""
     product = Product(id=1, name='Вода дистиллированная', price=50, stock=5)
 
     with pytest.raises(NegativeQuantityError):

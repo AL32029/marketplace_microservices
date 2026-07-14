@@ -1,5 +1,8 @@
 from catalog_service.domain.entities.product import Product
-from catalog_service.presentation.schemas.product_schemas import CreateProductRequest, ProductResponse
+from catalog_service.presentation.schemas.product_schemas import (
+    CreateProductRequest,
+    ProductResponse,
+)
 
 
 def request_to_domain(request: CreateProductRequest) -> Product:

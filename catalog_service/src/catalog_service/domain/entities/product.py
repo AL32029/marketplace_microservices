@@ -1,7 +1,9 @@
 from dataclasses import dataclass
-from typing import Optional
 
-from catalog_service.domain.exceptions.catalog_errors import InsufficientStockError, NegativeQuantityError
+from catalog_service.domain.exceptions.catalog_errors import (
+    InsufficientStockError,
+    NegativeQuantityError,
+)
 
 
 @dataclass
@@ -10,7 +12,7 @@ class Product:
     price: float
     stock: int = 0
 
-    id: Optional[int] = None
+    id: int | None = None
 
     def reduce_stock(self, quantity: int):
         if quantity <= 0:

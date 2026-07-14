@@ -1,29 +1,66 @@
+import asyncio
+import os
+import subprocess
+import sys
+
 import pytest
-from sqlalchemy import NullPool
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+import pytest_asyncio
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from testcontainers.postgres import PostgresContainer
 
-from catalog_service.infrastructure.db.models import Base
-from catalog_service.infrastructure.repositories.sqlalchemy_product_repo import SQLAlchemyProductRepo
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
-@pytest.fixture
-async def async_session_fixture(tmp_path):
-    db_file = tmp_path / "test.db"
+@pytest.fixture(scope="session")
+def postgres_container():
+    with PostgresContainer('postgres:17') as postgres:
+        db_url = postgres.get_connection_url(driver='asyncpg')
+        os.environ["TEST_DATABASE_URL"] = db_url
+        subprocess.run(
+            ["alembic", "-c", "alembic.ini", "upgrade", "head"],
+            check=True,
+            env=os.environ,
+        )
+        yield postgres
+
+
+@pytest_asyncio.fixture(scope="function")
+async def async_engine(postgres_container):
     engine = create_async_engine(
-        f"sqlite+aiosqlite:///{db_file}",
-        poolclass=NullPool,
+        os.environ["TEST_DATABASE_URL"],
+        echo=False,
+        pool_size=5,
+        pool_pre_ping=True,
     )
-
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-    async_session = async_sessionmaker(engine, expire_on_commit=False)
-    async with async_session() as session:
-        yield session
-
+    yield engine
     await engine.dispose()
 
 
-@pytest.fixture
-async def product_repo(async_session_fixture):
-    return SQLAlchemyProductRepo(async_session_fixture)
+async def _truncate_all_tables(async_engine):
+    async with async_engine.connect() as conn:
+        await conn.execute(text("SET session_replication_role = 'replica';"))
+        result = await conn.execute(text(
+            "SELECT tablename FROM pg_tables WHERE schemaname = 'public' "
+            "AND tablename != 'alembic_version';"
+        ))
+        tables = [row[0] for row in result]
+        for table in tables:
+            await conn.execute(text(f'TRUNCATE TABLE "{table}" RESTART IDENTITY CASCADE;'))
+        await conn.execute(text("SET session_replication_role = 'origin';"))
+        await conn.commit()
+
+
+@pytest_asyncio.fixture(scope="function")
+async def async_session(async_engine):
+    await _truncate_all_tables(async_engine)
+
+    async_session_maker = async_sessionmaker(
+        async_engine,
+        expire_on_commit=False,
+        autocommit=False,
+        autoflush=False,
+    )
+    async with async_session_maker() as session:
+        yield session
