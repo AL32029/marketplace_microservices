@@ -8,7 +8,7 @@ class CreateProductRequest(BaseModel):
 
 
 class ProductResponse(BaseModel):
-    id: int
+    id: int | None
     name: str
     price: float
     stock: int

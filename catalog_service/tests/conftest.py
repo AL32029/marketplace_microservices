@@ -17,7 +17,7 @@ if sys.platform == "win32":
 def postgres_container():
     with PostgresContainer('postgres:17') as postgres:
         db_url = postgres.get_connection_url(driver='asyncpg')
-        os.environ["TEST_DATABASE_URL"] = db_url
+        os.environ["DATABASE_URL"] = db_url
         subprocess.run(
             ["alembic", "-c", "alembic.ini", "upgrade", "head"],
             check=True,
@@ -29,7 +29,7 @@ def postgres_container():
 @pytest_asyncio.fixture(scope="function")
 async def async_engine(postgres_container):
     engine = create_async_engine(
-        os.environ["TEST_DATABASE_URL"],
+        os.environ["DATABASE_URL"],
         echo=False,
         pool_size=5,
         pool_pre_ping=True,

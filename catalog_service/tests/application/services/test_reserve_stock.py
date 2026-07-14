@@ -40,7 +40,7 @@ async def test_get_stock_error_not_found():
     with pytest.raises(ProductNotFoundError) as e:
         await use_case.reserve_stock(1, 20)
 
-        assert e.value == 'Product with ID 1 not found'
+    assert e.value == 'Product with ID 1 not found'
 
     mock_repo.get_by_id.assert_called_once()
 

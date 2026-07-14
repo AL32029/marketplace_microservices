@@ -8,7 +8,8 @@ from catalog_service.presentation.schemas.product_schemas import (
 def request_to_domain(request: CreateProductRequest) -> Product:
     product = Product(
         name=request.name,
-        price=request.price
+        price=request.price,
+        stock=request.stock
     )
 
     return product

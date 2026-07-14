@@ -26,7 +26,7 @@ def create_app(enable_lifespan: bool = True, container=None) -> FastAPI:
     else:
         lifespan = None
 
-    app = FastAPI(lifespan=lifespan)
+    app = FastAPI(title="Catalog Service", lifespan=lifespan)
 
     if container is None:
         container = get_dishka_container()
