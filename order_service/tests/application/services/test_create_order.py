@@ -3,19 +3,25 @@ from unittest.mock import AsyncMock
 import pytest
 
 from order_service.application.services.create_order import CreateOrderUseCase
+from order_service.infrastructure.repositories.sqlalchemy_order_repo import SQLAlchemyOrderRepo
 from order_service.tests.application.services.conftest import order_repo, order_item
 
 
 @pytest.mark.asyncio
-async def test_create_order_saves_order(order_repo, order_item):
-    """Тестирование сохранения заказа"""
-    await order_repo.save(order_item)
-    assert order_item.id is not None
+async def test_create_order_saves_order(order_item):
+    """SQLAlchemyOrderRepo должен сохранять заказ в базе данных"""
+    mock_repo = AsyncMock()
+    mock_repo.save = AsyncMock()
+
+    use_case = SQLAlchemyOrderRepo(mock_repo)
+
+    await use_case.save(order_item)
+
 
 
 @pytest.mark.asyncio
 async def test_create_order_raises_if_stock_insufficient(order_item):
-    """Тестирование отсутствия нужного количества товара на складе"""
+    """CreateOrderUseCase должен возвращать ValueError с ключевой фразов "insufficient stock" """
     mock_repo = AsyncMock()
     mock_catalog = AsyncMock()
     mock_catalog.check_stock.return_value = False

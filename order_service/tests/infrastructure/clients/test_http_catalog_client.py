@@ -1,14 +1,16 @@
 import httpx
 import pytest
+from dishka import Scope
 
 from order_service.domain.entities.order import OrderItem
 from order_service.domain.exceptions.catalog_errors import ProductNotFoundError, CatalogUnavailableError
 from order_service.infrastructure.clients.http_catalog_client import HTTPCatalogClient
 
 
-@pytest.fixture
-def catalog_client():
-    return HTTPCatalogClient(base_url='http://test.local')
+@pytest.fixture(scope='function')
+async def catalog_client(test_container) -> HTTPCatalogClient:
+    async with test_container(scope=Scope.REQUEST) as request_container:
+        return await request_container.get(HTTPCatalogClient)
 
 
 @pytest.fixture

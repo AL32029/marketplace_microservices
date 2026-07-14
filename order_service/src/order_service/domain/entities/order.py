@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional, List
 
+from order_service.domain.exceptions.catalog_errors import OrderWasPayedError
+
 
 class OrderStatus(Enum):
     PENDING = 'pending'
@@ -46,6 +48,6 @@ class Order:
 
     def cancel(self):
         if self.status == OrderStatus.PAID:
-            raise ValueError('The order has been paid for, cancellation is not possible')
+            raise OrderWasPayedError('The order has been paid for, cancellation is not possible')
 
         self.status = OrderStatus.CANCELLED
