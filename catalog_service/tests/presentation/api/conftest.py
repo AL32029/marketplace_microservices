@@ -49,7 +49,7 @@ async def test_container(async_session):
 @pytest.fixture(scope="function")
 def test_app(test_container):
     from catalog_service.main import create_app
-    return create_app(enable_lifespan=False, container=test_container)
+    return create_app(container=test_container)
 
 
 @pytest.fixture(scope="function")

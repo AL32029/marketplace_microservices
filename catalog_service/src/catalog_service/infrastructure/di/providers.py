@@ -35,7 +35,6 @@ class DatabaseProvider(Provider):
             autoflush=False,
         )
 
-    # Опционально: провайдер самой сессии (Scope.REQUEST)
     @provide
     async def provide_session(self, session_maker: async_sessionmaker[AsyncSession]) -> AsyncSession:
         async with session_maker() as session:
