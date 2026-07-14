@@ -1,5 +1,3 @@
-from typing import AsyncIterable
-
 from dishka import Provider, provide, Scope
 from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker

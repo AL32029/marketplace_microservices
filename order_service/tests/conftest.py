@@ -7,9 +7,9 @@ from unittest.mock import AsyncMock
 
 import pytest
 import pytest_asyncio
-from fastapi import Request
 from dishka import make_async_container
 from dishka.integrations.fastapi import FastapiProvider
+from fastapi import Request
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession

@@ -1,11 +1,8 @@
 import os
-from contextlib import asynccontextmanager
 
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from order_service.infrastructure.config import DatabaseSettings
 from order_service.infrastructure.di import get_dishka_container
 from order_service.presentation.api.order_router import router
 

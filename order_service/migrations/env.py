@@ -6,9 +6,8 @@ from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
-from src.order_service.infrastructure.db.models import Base
 from src.order_service.infrastructure.config import DatabaseSettings
+from src.order_service.infrastructure.db.models import Base
 
 if 'DATABASE_URL' not in os.environ or not os.environ['DATABASE_URL']:
     os.environ['DATABASE_URL'] = DatabaseSettings().DB_URL.unicode_string()
