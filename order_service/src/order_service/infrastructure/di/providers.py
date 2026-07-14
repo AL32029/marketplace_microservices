@@ -1,11 +1,11 @@
 from dishka import Provider, provide, Scope
-from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker
 
 from order_service.application.ports.order_repo import OrderRepository
 from order_service.application.services.create_order import CreateOrderUseCase
 from order_service.infrastructure.clients.http_catalog_client import HTTPCatalogClient
 from order_service.infrastructure.config import DatabaseSettings
+from order_service.infrastructure.config.microservices import CatalogClientSettings
 from order_service.infrastructure.repositories.sqlalchemy_order_repo import SQLAlchemyOrderRepo
 
 
@@ -40,9 +40,12 @@ class DatabaseProvider(Provider):
 
 class OrderProvider(Provider):
     @provide(scope=Scope.APP)
-    def catalog_client(self, request: Request) -> HTTPCatalogClient:
-        catalog_url = request.app.state.settings.CATALOG_URL
-        return HTTPCatalogClient(base_url=catalog_url)
+    def catalog_client_settings(self) -> CatalogClientSettings:
+        return CatalogClientSettings()
+
+    @provide(scope=Scope.APP)
+    def catalog_client(self, catalog_settings: CatalogClientSettings) -> HTTPCatalogClient:
+        return HTTPCatalogClient(base_url=catalog_settings.service_url)
 
     @provide(scope=Scope.REQUEST)
     async def db_order_repo(self, session: AsyncSession) -> OrderRepository:
