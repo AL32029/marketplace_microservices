@@ -40,7 +40,7 @@ async def test_get_stock_error_not_found():
     with pytest.raises(ProductNotFoundError) as e:
         await use_case.reserve_stock(1, 20)
 
-    assert e.value == 'Product with ID 1 not found'
+    assert str(e.value) == 'Product with ID 1 not found'
 
     mock_repo.get_by_id.assert_called_once()
 
@@ -61,7 +61,7 @@ async def test_get_stock_error_insufficient_stock_error():
     with pytest.raises(InsufficientStockError) as e:
         await use_case.reserve_stock(1, 20)
 
-        assert e.value == 'The required quantity is missing from the warehouse'
+        assert str(e.value) == 'The required quantity is missing from the warehouse'
 
     mock_repo.get_by_id.assert_called_once()
 
@@ -82,6 +82,6 @@ async def test_get_stock_error_negative_quantity_error():
     with pytest.raises(NegativeQuantityError) as e:
         await use_case.reserve_stock(1, -10)
 
-        assert e.value == 'The quantity must be positive'
+        assert str(e.value) == 'The quantity must be positive'
 
     mock_repo.get_by_id.assert_called_once()
