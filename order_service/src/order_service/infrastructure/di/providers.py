@@ -1,3 +1,5 @@
+from typing import AsyncIterable
+
 from dishka import Provider, provide, Scope
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker
 
@@ -16,7 +18,6 @@ class DatabaseProvider(Provider):
     def provide_engine(self, settings: DatabaseSettings) -> AsyncEngine:
         engine = create_async_engine(
             settings.DB_URL.unicode_string(),
-            echo=False,
             pool_pre_ping=True,
             pool_size=10,
             max_overflow=20,
@@ -33,12 +34,14 @@ class DatabaseProvider(Provider):
         )
 
     @provide
-    async def provide_session(self, session_maker: async_sessionmaker[AsyncSession]) -> AsyncSession:
+    async def provide_session(self, session_maker: async_sessionmaker[AsyncSession]) -> AsyncIterable[AsyncSession]:
         async with session_maker() as session:
             yield session
 
 
 class OrderProvider(Provider):
+    scope = Scope.APP
+
     @provide(scope=Scope.APP)
     def catalog_client_settings(self) -> CatalogClientSettings:
         return CatalogClientSettings()

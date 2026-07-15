@@ -4,7 +4,6 @@ import pytest
 
 from order_service.application.services.create_order import CreateOrderUseCase
 from order_service.infrastructure.repositories.sqlalchemy_order_repo import SQLAlchemyOrderRepo
-from order_service.tests.application.services.conftest import order_item
 
 
 @pytest.mark.asyncio

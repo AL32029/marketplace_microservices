@@ -1,18 +1,19 @@
 import pytest
-from dishka import Scope
-
-from order_service.application.services.create_order import CreateOrderUseCase
-
-
-@pytest.fixture(scope='function')
-async def create_order_use_case(test_container) -> CreateOrderUseCase:
-    async with test_container(scope=Scope.REQUEST) as request_container:
-        return await request_container.get(CreateOrderUseCase)
 
 
 @pytest.mark.asyncio
-async def test_create_order_endpoint(create_order_use_case, client):
+async def test_create_order_endpoint(httpx_mock, client):
     """Тестирование эндпоинта POST /orders/"""
+
+    httpx_mock.add_response(
+        url='http://test.local/products/1/stock',
+        method='GET',
+        json={
+            'stock': 500
+        },
+        status_code=200
+    )
+
     response = await client.post(
         "/orders/",
         json={

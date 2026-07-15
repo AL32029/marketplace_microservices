@@ -3,7 +3,6 @@ import os
 import subprocess
 import sys
 from typing import AsyncIterable
-from unittest.mock import AsyncMock
 
 import pytest
 import pytest_asyncio
@@ -78,13 +77,13 @@ async def async_session(async_engine):
 
 
 @pytest.fixture(scope="function")
-async def test_container(async_session):
+async def test_container(request, async_session):
     from dishka import Provider, Scope, provide
 
     class TestOrderProvider(Provider):
-        @provide(scope=Scope.REQUEST)
+        @provide(scope=Scope.APP)
         def catalog_client(self) -> HTTPCatalogClient:
-            return AsyncMock()
+            return HTTPCatalogClient(base_url="http://test.local")
 
         @provide(scope=Scope.REQUEST)
         async def get_db(self, request: Request) -> AsyncIterable[AsyncSession]:
@@ -92,8 +91,8 @@ async def test_container(async_session):
                 yield session
 
         @provide(scope=Scope.REQUEST)
-        async def db_order_repo(self, session: AsyncSession) -> OrderRepository:
-            return SQLAlchemyOrderRepo(session)
+        async def db_order_repo(self) -> OrderRepository:
+            return SQLAlchemyOrderRepo(async_session)
 
         @provide(scope=Scope.REQUEST)
         async def create_order_use_case(self, repo: OrderRepository,
@@ -102,7 +101,7 @@ async def test_container(async_session):
 
     container = make_async_container(
         TestOrderProvider(),
-        FastapiProvider(),
+        FastapiProvider()
     )
     yield container
     await container.close()
@@ -110,7 +109,7 @@ async def test_container(async_session):
 
 @pytest.fixture(scope="function")
 def test_app(test_container):
-    from catalog_service.main import create_app
+    from order_service.main import create_app
     return create_app(container=test_container)
 
 

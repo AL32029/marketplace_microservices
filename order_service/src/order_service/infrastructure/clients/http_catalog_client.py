@@ -18,7 +18,6 @@ class HTTPCatalogClient(CatalogClient):
 
     async def check_stock(self, product_id: int, quantity: int) -> bool:
         url = f"{self.base_url}/products/{product_id}/stock"
-        last_exception = None
 
         for attempt in range(self.retries):
             try:
@@ -36,7 +35,6 @@ class HTTPCatalogClient(CatalogClient):
                 raise CatalogUnavailableError(f"Catalog service error: {e.response.status_code}") from e
 
             except TimeoutException as e:
-                last_exception = e
                 if attempt < self.retries - 1:
                     await asyncio.sleep(2 ** attempt)
                     continue
